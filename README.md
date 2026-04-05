@@ -1,6 +1,6 @@
-# 🎬 Auto Subtitle & Translate with Whisper + LLaMA
+# 🎬 Auto Subtitle & Translate with Whisper
 
-Automatically generate subtitles for any video using [OpenAI Whisper](https://openai.com/blog/whisper), overlay them with `ffmpeg`, and optionally translate them to 50+ languages using a [LLaMA2-based multilingual translator](https://huggingface.co/SnypzZz/Llama2-13b-Language-translate).
+Automatically generate subtitles for any video using [OpenAI Whisper](https://openai.com/blog/whisper), overlay them with `ffmpeg`, and optionally translate them with the built-in translation
 
 ### 📺 [Demo Video](https://youtu.be/vkvTpmQ7M48?si=qQLvYzwtsQ4djo4K)
 
@@ -51,7 +51,7 @@ auto_subtitle_llama /path/to/video.mp4
 To translate subtitles to another language:
 
 ```bash
-auto_subtitle_llama /path/to/video.mp4 --translate_to ko_KR
+auto_subtitle_llama /path/to/video.mp4 --translate_to ko
 ```
 
 ---
