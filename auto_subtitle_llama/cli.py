@@ -4,9 +4,8 @@ import whisper
 import argparse
 import warnings
 import tempfile
-from .utils import *
-from typing import List, Tuple
-from tqdm import tqdm
+from .utils import LANG_CODE_MAPPER, str2bool, write_srt, filename
+from typing import Tuple
 
 # Uncomment below and comment "from .utils import *", if executing cli.py directly
 # import sys
@@ -37,7 +36,7 @@ def main():
     parser.add_argument("--language", type=str, default="auto", choices=["auto","af","am","ar","as","az","ba","be","bg","bn","bo","br","bs","ca","cs","cy","da","de","el","en","es","et","eu","fa","fi","fo","fr","gl","gu","ha","haw","he","hi","hr","ht","hu","hy","id","is","it","ja","jw","ka","kk","km","kn","ko","la","lb","ln","lo","lt","lv","mg","mi","mk","ml","mn","mr","ms","mt","my","ne","nl","nn","no","oc","pa","pl","ps","pt","ro","ru","sa","sd","si","sk","sl","sn","so","sq","sr","su","sv","sw","ta","te","tg","th","tk","tl","tr","tt","uk","ur","uz","vi","yi","yo","zh"], 
     help="What is the origin language of the video? If unset, it is detected automatically.")
     parser.add_argument("--translate_to", type=str, default=None, choices=["af","am","ar","as","az","ba","be","bg","bn","bo","br","bs","ca","cs","cy","da","de","el","en","es","et","eu","fa","fi","fo","fr","gl","gu","ha","haw","he","hi","hr","ht","hu","hy","id","is","it","ja","jw","ka","kk","km","kn","ko","la","lb","ln","lo","lt","lv","mg","mi","mk","ml","mn","mr","ms","mt","my","ne","nl","nn","no","oc","pa","pl","ps","pt","ro","ru","sa","sd","si","sk","sl","sn","so","sq","sr","su","sv","sw","ta","te","tg","th","tk","tl","tr","tt","uk","ur","uz","vi","yi","yo","zh"],
-    help="Final target language code; af=Afrikaans, ar=Arabic, bn=Bengali, cs=Czech, de=German, en=English, es=Spanish, fa=Persian, fi=Finnish, fr=French, gu=Gujarati, hi=Hindi, id=Indonesian, it=Italian, ja=Japanese, ko=Korean, lt=Lithuanian, lv=Latvian, ml=Malayalam, mr=Marathi, ms=Malay, ne=Nepali, nl=Dutch, pl=Polish, ps=Pashto, pt=Portuguese, ro=Romanian, ru=Russian, si=Sinhala, sv=Swedish, sw=Swahili, ta=Tamil, te=Telugu, th=Thai, tl=Tagalog, tr=Turkish, uk=Ukrainian, ur=Urdu, vi=Vietnamese, zh=Chinese")
+    help="Final target language code; af=Afrikaans, am=Amharic, ar=Arabic, as=Assamese, az=Azerbaijani, ba=Bashkir, be=Belarusian, bg=Bulgarian, bn=Bengali, bo=Tibetan, br=Breton, bs=Bosnian, ca=Catalan, cs=Czech, cy=Welsh, da=Danish, de=German, el=Greek, en=English, es=Spanish, et=Estonian, eu=Basque, fa=Persian, fi=Finnish, fo=Faroese, fr=French, gl=Galician, gu=Gujarati, ha=Hausa, haw=Hawaiian, he=Hebrew, hi=Hindi, hr=Croatian, ht=Haitian Creole, hu=Hungarian, hy=Armenian, id=Indonesian, is=Icelandic, it=Italian, ja=Japanese, jw=Javanese, ka=Georgian, kk=Kazakh, km=Khmer, kn=Kannada, ko=Korean, la=Latin, lb=Luxembourgish, ln=Lingala, lo=Lao, lt=Lithuanian, lv=Latvian, mg=Malagasy, mi=Maori, mk=Macedonian, ml=Malayalam, mn=Mongolian, mr=Marathi, ms=Malay, mt=Maltese, my=Myanmar, ne=Nepali, nl=Dutch, nn=Nynorsk, no=Norwegian, oc=Occitan, pa=Punjabi, pl=Polish, ps=Pashto, pt=Portuguese, ro=Romanian, ru=Russian, sa=Sanskrit, sd=Sindhi, si=Sinhala, sk=Slovak, sl=Slovenian, sn=Shona, so=Somali, sq=Albanian, sr=Serbian, su=Sundanese, sv=Swedish, sw=Swahili, ta=Tamil, te=Telugu, tg=Tajik, th=Thai, tk=Turkmen, tl=Tagalog, tr=Turkish, tt=Tatar, uk=Ukrainian, ur=Urdu, uz=Uzbek, vi=Vietnamese, yi=Yiddish, yo=Yoruba, yue=Cantonese, zh=Chinese")
     
     args = parser.parse_args().__dict__
     model_name: str = args.pop("model")
@@ -143,7 +142,7 @@ def get_subtitles(audio_paths: list, output_srt: bool, output_dir: str, model:wh
         print(f"Curent Language: {current_lang}") 
         
         print("[Step2] transcribe (Whisper)")
-        if translate_to != None and detected_language != translate_to:
+        if translate_to is not None and detected_language != translate_to:
             print("[Step3] translate")
             args["task"]="translate"
         print(args)
